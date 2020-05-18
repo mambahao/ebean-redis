@@ -14,6 +14,12 @@ public class RedisConfig {
 
   private int port = 6379;
 
+  private String password = null;
+
+  private Integer timeout = -1;
+
+  private Integer database = 0;
+
   private int maxTotal = 200;
 
   private int maxIdle = 200;
@@ -23,6 +29,7 @@ public class RedisConfig {
   private long maxWaitMillis = -1L;
 
   private boolean blockWhenExhausted = true;
+
 
   /**
    * Return a new JedisPool based on the configuration.
@@ -36,7 +43,31 @@ public class RedisConfig {
     poolConfig.setMaxWaitMillis(maxWaitMillis);
     poolConfig.setBlockWhenExhausted(blockWhenExhausted);
 
-    return new JedisPool(poolConfig, server, port);
+    return new JedisPool(poolConfig, server, port, timeout, password, database);
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public Integer getTimeout() {
+    return timeout;
+  }
+
+  public void setTimeout(Integer timeout) {
+    this.timeout = timeout;
+  }
+
+  public Integer getDatabase() {
+    return database;
+  }
+
+  public void setDatabase(Integer database) {
+    this.database = database;
   }
 
   public String getServer() {
@@ -104,6 +135,9 @@ public class RedisConfig {
     this.maxTotal = reader.getInt("ebean.redis.maxTotal", maxTotal);
     this.maxWaitMillis = reader.getLong("ebean.redis.maxWaitMillis", maxWaitMillis);
     this.blockWhenExhausted = reader.getBool("ebean.redis.blockWhenExhausted", blockWhenExhausted);
+    this.timeout = reader.getInt("ebean.redis.timeout", timeout);
+    this.password = reader.get("ebean.redis.password", password);
+    this.database = reader.getInt("ebean.redis.database", database);
   }
 
   private static class Reader {
